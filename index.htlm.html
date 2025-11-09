@@ -1,0 +1,188 @@
+
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pluie de cartes</title>
+
+  <style>
+    /* --- STYLE GLOBAL --- */
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: linear-gradient(135deg, darkgreen, darkgreen);
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      height: 100vh;
+    }
+
+    /* --- ANIMATION DE PLUIE --- */
+    .symbol {
+      position: absolute;
+      top: -50px;
+      font-size: 24px;
+      opacity: 0.8;
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* --- TITRES --- */
+    h1 {
+      font-size: 60px;
+      letter-spacing: 1px;
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 2s ease-in-out;
+      margin-top: 80px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 30px;
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    /* --- GALERIE D’IMAGES --- */
+    .galerie {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .galerie img {
+      height: 60px;
+      width: 60px;
+      margin: 5px;
+      border-radius: 8px;
+      transition: transform 0.3s;
+    }
+
+    .galerie img:hover {
+      transform: scale(1.2);
+    }
+
+    /* --- LISTE DES MEMBRES --- */
+    .membres h3 {
+      line-height: 1.8;
+      font-size: 18px;
+    }
+
+    /* --- VIDEO ET BOUTONS --- */
+    video {
+      border: 2px solid #fff;
+      border-radius: 10px;
+      width: 130px;
+      height: 100px;
+      background: black;
+      margin-top: 20px;
+    }
+
+    button {
+      margin: 10px 5px;
+      padding: 8px 16px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      background: #F4F4F4;
+      color: #000;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #ffaa00;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>Bienvenue dans notre UAP</h1>
+
+  <h2> <a href="http://localhost:63342/uap/notre%20UAP.html?_ijt=81i09jhm8ul4lm0rbqukdl5ael&_ij_reload=RELOAD_ON_SAVE"style="text-decoration: none; color: inherit">La petite famille prio </a></h2>
+
+  <div class="galerie">
+    <img src="https://2.bp.blogspot.com/-AbNnRCv8tl0/UqNZ5A-d13I/AAAAAAAALO0/atN7bg7L6aE/s1600/5957153-roi-de-pique-de-cartes-a-jouer.jpg" alt="Roi de pique">
+    <img src="https://i.pinimg.com/736x/1e/7d/66/1e7d66db4dd281a40988f4eea092804f.jpg" alt="Dame de trèfle">
+    <img src="https://i.pinimg.com/originals/a5/0d/c4/a50dc429dcabb350e90e89c739857aec.png" alt="Roi de cœur">
+    <img src="https://www.venusvoyance.com/wp-content/uploads/2012/01/17-dame_de_carreau.gif" alt="Dame de carreau">
+    <img src="https://tse3.mm.bing.net/th/id/OIP.-UWzPovgveHhWXKBnzusewHaKx" alt="Carte mystère">
+    <img src="https://i.pinimg.com/originals/c6/90/d9/c690d95c3bcd141b444a577532f34725.jpg" alt="As de pique">
+  </div>
+
+  <div class="membres">
+    <h3>
+      MACHEFAUX SÉVERINE<br>
+      SHUBER FRÉDÉRIC<br>
+      MICHEL CÉLINE<br>
+      PELETIER FLORENCE<br>
+      LE COZ CHERYL<br>
+      AMANE AYA
+    </h3>
+  </div>
+
+  <video id="video" autoplay playsinline></video><br>
+  <button id="startBtn">Activer</button>
+  <button id="stopBtn">Désactiver</button>
+
+  <script>
+    // --- ANIMATION DE PLUIE DE CARTES ---
+    const symbols = ["♣", "♦", "♥", "♠"];
+    const colors = { "♣": "#00ff00", "♦": "#ff3333", "♥": "#ff3366", "♠": "#ffffff" };
+
+    function createSymbol() {
+      const symbol = document.createElement("div");
+      const type = symbols[Math.floor(Math.random() * symbols.length)];
+      symbol.textContent = type;
+      symbol.classList.add("symbol");
+      symbol.style.left = Math.random() * 100 + "vw";
+      symbol.style.fontSize = (Math.random() * 24 + 16) + "px";
+      symbol.style.color = colors[type];
+      symbol.style.animationDuration = (Math.random() * 3 + 3) + "s";
+      document.body.appendChild(symbol);
+      setTimeout(() => symbol.remove(), 6000);
+    }
+
+    setInterval(createSymbol, 200);
+
+    // --- GESTION DE LA CAMÉRA ---
+    const video = document.getElementById('video');
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    let stream = null;
+
+    startBtn.addEventListener('click', async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+      } catch (err) {
+        console.error("Erreur d'accès à la caméra :", err);
+        alert("Impossible d'accéder à la caméra : " + err.message);
+      }
+    });
+
+    stopBtn.addEventListener('click', () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+        stream = null;
+      }
+    });
+  </script>
+
+</body>
+</html>
